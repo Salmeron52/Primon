@@ -55,11 +55,11 @@ class NumeroViewModel(private val context: Context) : ViewModel() {
         }
     }
 
-    fun numeroAleatorio(): Int {
+    private fun numeroAleatorio(): Int {
         return (0..3).random() // 0, 1, 2, 3
     }
 
-    fun inicializar(viewModel: NumeroViewModel) {
+    fun inicializar() {
         //vaciamos numbers
         numbers = emptyList<Int>()
         numbers = numbers + numeroAleatorio()
@@ -107,38 +107,53 @@ class NumeroViewModel(private val context: Context) : ViewModel() {
         }
     }
 
-    fun lanzarSonido(
+    private fun lanzarSonido(
         numero: Int,
-        viewModel: NumeroViewModel,
         context: Context,
         exoPlayer: ExoPlayer,
     ) {
         when (numero) {
-            0 -> {
-                viewModel.sonar(context, exoPlayer, R.raw.sonidoamarillo)
-            }
-
-            1 -> {
-                viewModel.sonar(context, exoPlayer, R.raw.sonidoverde)
-            }
-
-            2 -> {
-                viewModel.sonar(context, exoPlayer, R.raw.sonidorojo)
-            }
-
-            3 -> {
-                viewModel.sonar(context, exoPlayer, R.raw.sonidoazul)
-            }
+            0 -> sonar(context, exoPlayer, R.raw.sonidoamarillo)
+            1 -> sonar(context, exoPlayer, R.raw.sonidoverde)
+            2 -> sonar(context, exoPlayer, R.raw.sonidorojo)
+            3 -> sonar(context, exoPlayer, R.raw.sonidoazul)
         }
     }
 
-    fun vibrar(vibrator: Vibrator, milisegundos: Long) {
+    private fun vibrar(vibrator: Vibrator, milisegundos: Long) {
         vibrator.vibrate(
             VibrationEffect.createOneShot(
                 milisegundos,
                 VibrationEffect.DEFAULT_AMPLITUDE
             )
         )
+    }
+
+    fun acciones(
+        numero: Int,
+        context: Context,
+        exoPlayer: ExoPlayer,
+        vibrator: Vibrator,
+        milisegundos: Long,
+    ) {
+        lanzarSonido(numero, context, exoPlayer)
+        vibrar(vibrator, milisegundos)
+        shouldRecompose = false
+        sumarNuevoColor()
+    }
+
+    fun secuenciaIncorrecta(
+        listaNumeros: List<Int>,
+        numbers: List<Int>,
+        viewModel: NumeroViewModel,
+    ) {
+        val minSize = minOf(listaNumeros.size, numbers.size)
+        for (i in 0 until minSize) {
+            if (listaNumeros[i] != numbers[i]) {
+                viewModel.mostrarError = true
+                viewModel.jugar = false
+            }
+        }
     }
 
 }

@@ -1,9 +1,7 @@
 package com.buenhijogames.primon.componentes
 
 import android.content.Context
-import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +42,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun BotonUsuario(viewModel: NumeroViewModel, numero: Int, color: Color, context: Context) {
+fun BotonUsuario(viewModel: NumeroViewModel, numero: Int, color: Color) {
     val context = LocalContext.current
     // Creamos un ExoPlayer y lo liberamos cuando el Composable se destruye
     val exoPlayer = remember { ExoPlayer.Builder(context).build() }
@@ -65,15 +63,11 @@ fun BotonUsuario(viewModel: NumeroViewModel, numero: Int, color: Color, context:
         listaNumeros = viewModel.numbers,
         onUpdated = { viewModel.listaNumeros = it },
         onClicked = {
-            viewModel.lanzarSonido(numero, viewModel, context, exoPlayer)
-            viewModel.vibrar(vibrator, milisegundos)
-            viewModel.shouldRecompose = false
-            viewModel.sumarNuevoColor()
-            secuenciaIncorrecta(viewModel.listaNumeros, viewModel.numbers, viewModel)
+            viewModel.acciones(numero, context, exoPlayer, vibrator, milisegundos)
+            viewModel.secuenciaIncorrecta(viewModel.listaNumeros, viewModel.numbers, viewModel)
         }
     )
 }
-
 
 @Composable
 fun Boton(
@@ -100,23 +94,10 @@ fun Boton(
     ) { }
 }
 
-fun secuenciaIncorrecta(
-    listaNumeros: List<Int>,
-    numbers: List<Int>,
-    viewModel: NumeroViewModel,
-) {
-    val minSize = minOf(listaNumeros.size, numbers.size)
-    for (i in 0 until minSize) {
-        if (listaNumeros[i] != numbers[i]) {
-            viewModel.mostrarError = true
-            viewModel.jugar = false
-        }
-    }
 
-}
 
 @Composable
-fun Caja(viewModel: NumeroViewModel, color: Color) {
+fun Caja(color: Color) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp
     val screenHeightDp = configuration.screenHeightDp
@@ -139,23 +120,22 @@ fun ControlCaja(
         MostrarError()
     } else {
         if (numbers.size == 1) {
-            NumberScroller(numbers = numbers, viewModel = viewModel, context = LocalContext.current)
+            NumberScroller(numbers = numbers, viewModel = viewModel)
         } else {
             if (viewModel.shouldRecompose) {
                 NumberScroller(
                     numbers = numbers,
-                    viewModel = viewModel,
-                    context = LocalContext.current
+                    viewModel = viewModel
                 )
             } else {
-                Caja(viewModel = viewModel, color = Color.Black)
+                Caja(color = Color.Black)
             }
         }
     }
 }
 
 @Composable
-fun MostrarErrorParpadeante(viewModel: NumeroViewModel, modifier: Modifier = Modifier) {
+fun MostrarErrorParpadeante(modifier: Modifier = Modifier) {
 
     var showError by remember { mutableStateOf(true) }
 
@@ -175,7 +155,7 @@ fun MostrarError() {
 
 
 @Composable
-fun NumberScroller(numbers: List<Int>, viewModel: NumeroViewModel, context: Context) {
+fun NumberScroller(numbers: List<Int>, viewModel: NumeroViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp
     val screenHeightDp = configuration.screenHeightDp
@@ -234,16 +214,16 @@ private fun MostrarSonidosYColores(
 ) {
     if (currentIndex.intValue >= -2 && mostrarColor) {
         if (numbers[currentIndex.intValue] == 0) {
-            Caja(viewModel = viewModel, color = Amarillo)
+            Caja(color = Amarillo)
             viewModel.sonar(context, exoPlayer, R.raw.sonidoamarillo)
         } else if (numbers[currentIndex.intValue] == 1) {
-            Caja(viewModel = viewModel, color = Color.Green)
+            Caja(color = Color.Green)
             viewModel.sonar(context, exoPlayer, R.raw.sonidoverde)
         } else if (numbers[currentIndex.intValue] == 2) {
-            Caja(viewModel = viewModel, color = Color.Red)
+            Caja(color = Color.Red)
             viewModel.sonar(context, exoPlayer, R.raw.sonidorojo)
         } else if (numbers[currentIndex.intValue] == 3) {
-            Caja(viewModel = viewModel, color = Color.Blue)
+            Caja(color = Color.Blue)
             viewModel.sonar(context, exoPlayer, R.raw.sonidoazul)
         }
     }

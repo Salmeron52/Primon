@@ -1,6 +1,5 @@
 package com.buenhijogames.primon
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,7 +30,7 @@ import com.buenhijogames.primon.publicidad.PrimonBanner
 import com.buenhijogames.primon.ui.theme.Amarillo
 
 @Composable
-fun Pantalla5(modifier: Modifier = Modifier, viewModel: NumeroViewModel, context: Context) {
+fun Pantalla5(viewModel: NumeroViewModel) {
 
     val context = LocalContext.current
     // Creamos un ExoPlayer y lo liberamos cuando el Composable se destruye
@@ -72,13 +71,13 @@ fun Pantalla5(modifier: Modifier = Modifier, viewModel: NumeroViewModel, context
             Spacer(modifier = Modifier.height(24.dp))
 
             Row {
-                BotonUsuario(viewModel, 0, Amarillo, context = LocalContext.current)
-                BotonUsuario(viewModel, 1, Color.Green, context = LocalContext.current)
+                BotonUsuario(viewModel, 0, Amarillo)
+                BotonUsuario(viewModel, 1, Color.Green)
             }
             Spacer(modifier = Modifier.height(12.dp))
             Row {
-                BotonUsuario(viewModel, 2, Color.Red, context = LocalContext.current)
-                BotonUsuario(viewModel, 3, Color.Blue, context = LocalContext.current)
+                BotonUsuario(viewModel, 2, Color.Red)
+                BotonUsuario(viewModel, 3, Color.Blue)
             }
 
         } else {
@@ -87,12 +86,12 @@ fun Pantalla5(modifier: Modifier = Modifier, viewModel: NumeroViewModel, context
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MostrarErrorParpadeante(viewModel, modifier = Modifier.weight(1f))
+                MostrarErrorParpadeante(modifier = Modifier.weight(1f))
                 viewModel.sonar(context, exoPlayer, R.raw.error)
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedButton(
                     onClick = {
-                        viewModel.inicializar(viewModel)
+                        viewModel.inicializar()
                         viewModel.mostrarError = false
                         viewModel.puntos = 0
                         viewModel.jugar = true
