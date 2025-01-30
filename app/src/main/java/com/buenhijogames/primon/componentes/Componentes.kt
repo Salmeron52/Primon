@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,10 +42,10 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.buenhijogames.primon.NumeroViewModel
 import com.buenhijogames.primon.R
 import com.buenhijogames.primon.data.RecordDataStore
+import com.buenhijogames.primon.ui.theme.Amarillo
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun BotonUsuario(viewModel: NumeroViewModel, numero: Int, color: Color, context: Context) {
     val context = LocalContext.current
@@ -120,11 +123,16 @@ fun Boton(
     onUpdated: (List<Int>) -> Unit,
     onClicked: (List<Int>) -> Unit,
 ) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+    val screenHeightDp = configuration.screenHeightDp
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
+            .height(screenHeightDp.dp * .2f)
+            .width(screenWidthDp.dp * .40f)
             .padding(horizontal = 4.dp)
-            .size(160.dp)
             .background(color)
             .clickable { onUpdated(listaDeEnteros + numero); onClicked(listaNumeros) },
         contentAlignment = Alignment.Center
@@ -148,11 +156,15 @@ fun secuenciaIncorrecta(
 
 @Composable
 fun Caja(viewModel: NumeroViewModel, color: Color) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+    val screenHeightDp = configuration.screenHeightDp
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
-            .padding(horizontal = 4.dp)
-            .size(120.dp)
+            .height(screenHeightDp.dp * .2f)
+            .width(screenWidthDp.dp * .80f)
             .background(color),
     ) {}
 }
@@ -203,6 +215,10 @@ fun MostrarError() {
 
 @Composable
 fun NumberScroller(numbers: List<Int>, viewModel: NumeroViewModel, context: Context) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+    val screenHeightDp = configuration.screenHeightDp
+
     val currentIndex = remember { mutableIntStateOf(-1) } // -1 para que no se muestre nada
     var mostrarColor by remember { mutableStateOf(false) }
     var tiempoExposicion = 500L
@@ -237,8 +253,8 @@ fun NumberScroller(numbers: List<Int>, viewModel: NumeroViewModel, context: Cont
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(24.dp))
-            .padding(horizontal = 4.dp)
-            .size(120.dp)
+            .height(screenHeightDp.dp * .2f)
+            .width(screenWidthDp.dp * .80f)
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
@@ -257,7 +273,7 @@ private fun MostrarSonidosYColores(
 ) {
     if (currentIndex.intValue >= -2 && mostrarColor) {
         if (numbers[currentIndex.intValue] == 0) {
-            Caja(viewModel = viewModel, color = Color.Yellow)
+            Caja(viewModel = viewModel, color = Amarillo)
             viewModel.sonar(context, exoPlayer, R.raw.sonidoamarillo)
         } else if (numbers[currentIndex.intValue] == 1) {
             Caja(viewModel = viewModel, color = Color.Green)

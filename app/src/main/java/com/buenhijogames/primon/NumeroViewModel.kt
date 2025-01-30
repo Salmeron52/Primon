@@ -19,6 +19,7 @@ class NumeroViewModel(private val context: Context) : ViewModel() {
     var listaNumeros by mutableStateOf(listOf<Int>())
     var numbers by mutableStateOf(listOf<Int>(numeroAleatorio()))
     var shouldRecompose by mutableStateOf(false)
+    var recomponerPublicidad by mutableStateOf(false)
     var mostrarError by mutableStateOf(false)
     var jugar by mutableStateOf(true)
     var puntos: Int by mutableIntStateOf(0)
