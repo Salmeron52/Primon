@@ -19,7 +19,7 @@ fun PrimonBanner(modifier: Modifier = Modifier, adId: String, viewModel: NumeroV
             AdView(context).apply {
                 setAdSize(AdSize.BANNER)
                 adUnitId = adId
-                loadAd(AdRequest.Builder().build())
+                loadAd(AdRequest.Builder().build())//
             }
         }
     )
