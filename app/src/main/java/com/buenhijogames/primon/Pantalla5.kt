@@ -103,7 +103,6 @@ fun Pantalla5(modifier: Modifier = Modifier, viewModel: NumeroViewModel, context
         }
         PrimonBanner(
             modifier = Modifier.fillMaxSize(),
-            /*adId = "ca-app-pub-3206003476681627/8615450676",*/ //PRODUCCIÓN
             adId = "ca-app-pub-3940256099942544/9214589741", // PRUEBAS
             viewModel
         )
