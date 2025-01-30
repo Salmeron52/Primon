@@ -1,11 +1,9 @@
 package com.buenhijogames.primon.componentes
 
 import android.content.Context
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -53,7 +50,7 @@ fun BotonUsuario(viewModel: NumeroViewModel, numero: Int, color: Color, context:
     val exoPlayer = remember { ExoPlayer.Builder(context).build() }
 
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-    val milisegundos = 10L
+    val milisegundos = 25L
 
     DisposableEffect(exoPlayer) {
         onDispose {
@@ -68,46 +65,10 @@ fun BotonUsuario(viewModel: NumeroViewModel, numero: Int, color: Color, context:
         listaNumeros = viewModel.numbers,
         onUpdated = { viewModel.listaNumeros = it },
         onClicked = {
-            when (numero) {
-                0 -> {
-                    viewModel.sonar(context, exoPlayer, R.raw.sonidoamarillo)
-                }
-
-                1 -> {
-                    viewModel.sonar(context, exoPlayer, R.raw.sonidoverde)
-                }
-
-                2 -> {
-                    viewModel.sonar(context, exoPlayer, R.raw.sonidorojo)
-                }
-
-                3 -> {
-                    viewModel.sonar(context, exoPlayer, R.raw.sonidoazul)
-                }
-            }
-
-            vibrator.vibrate(
-                VibrationEffect.createOneShot(
-                    milisegundos,
-                    VibrationEffect.DEFAULT_AMPLITUDE
-                )
-            )
-
+            viewModel.lanzarSonido(numero, viewModel, context, exoPlayer)
+            viewModel.vibrar(vibrator, milisegundos)
             viewModel.shouldRecompose = false
-            //Si las lista no coinciden se lanza un mensaje de error
-            if (viewModel.listaNumeros != viewModel.numbers) {
-                Log.e("Error", "Las listas no coinciden")
-                Log.e("listaNumeros", viewModel.listaNumeros.toString())
-                Log.e("numbers", viewModel.numbers.toString())
-            } else {
-                //Si las listas coinciden, se añade un número aleatorio a numbers
-                viewModel.numbers += viewModel.numeroAleatorio()
-                viewModel.puntos += 10
-                //Se limpia la lista de números
-                viewModel.listaNumeros = emptyList()
-                viewModel.shouldRecompose = !viewModel.shouldRecompose
-                viewModel.mostrarError = false
-            }
+            viewModel.sumarNuevoColor()
             secuenciaIncorrecta(viewModel.listaNumeros, viewModel.numbers, viewModel)
         }
     )
